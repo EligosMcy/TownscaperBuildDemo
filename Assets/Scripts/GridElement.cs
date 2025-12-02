@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 
-public class GridElement : MonoBehaviour
+namespace Scripts
 {
+    public class GridElement : MonoBehaviour
+    {
         
+    }
 }
