@@ -7,7 +7,6 @@ namespace Scripts.Main
     {
         public static LevelGenerator Instance;
 
-
         //
         [Range(1, 15)]
         [SerializeField]
@@ -31,8 +30,6 @@ namespace Scripts.Main
         [SerializeField]
         private GridElement[] _gridElements;
 
-        private CalculateProcessor _calculateProcessor;
-
         [Space(20)]
         [SerializeField]
         private Transform _cornerElementGroup;
@@ -47,11 +44,33 @@ namespace Scripts.Main
         {
             Instance = this;
 
-            _calculateProcessor = new CalculateProcessor();
-
             spawnCornerElements();
 
             spawnGridElement();
+
+            getNearGrid();
+
+            getCornerBitMaskValue();
+        }
+
+        private void getNearGrid()
+        {
+            foreach (CornerElement cornerElement in _cornerElements)
+            {
+                Coord currentCoord = cornerElement.GetCoord();
+
+                GridElement[] nearGridElements = GetCornerNearGridElements(currentCoord);
+
+                cornerElement.SetNearGridElements(nearGridElements);
+            }
+        }
+
+        private void getCornerBitMaskValue()
+        {
+            foreach (CornerElement cornerElement in _cornerElements)
+            {
+                cornerElement.SetCornerBitMaskValue();
+            }
         }
 
         private void spawnCornerElements()
@@ -88,6 +107,8 @@ namespace Scripts.Main
 
                         gridElement.Initialize(x, y, z);
 
+                        gridElement.SetEnable();
+
                         _gridElements[x + _width * (z + _width * y)] = gridElement;
                     }
                 }
@@ -96,17 +117,22 @@ namespace Scripts.Main
 
         public GridElement GetProcessGrid(Coord currentCoord, GridEventEnum gridEventEnum)
         {
-            return _calculateProcessor.GetProcessGrid(_width, _height, _gridElements, currentCoord, gridEventEnum);
+            return CalculateProcessor.GetProcessGrid(_width, _height, _gridElements, currentCoord, gridEventEnum);
         }
 
-        public CornerElement[] GetGridCornerElements(Coord currentCoord)
+        public CornerElement[] GetGridForCornerElements(Coord currentCoord)
         {
-            return _calculateProcessor.GetGridCornerElements(_widthPlusOne, _heightPlusOne, _cornerElements, currentCoord);
+            return CalculateProcessor.GetGridForCornerElements(_widthPlusOne, _heightPlusOne, _cornerElements, currentCoord);
+        }
+
+        public GridElement[] GetCornerNearGridElements(Coord currentCoord)
+        {
+            return CalculateProcessor.GetCornerNearGridElements(_width, _height, _gridElements, currentCoord);
         }
 
         public void ProcessCornerElementsPosition(Bounds bounds, CornerElement[] targetCornerElements)
         {
-            _calculateProcessor.ProcessCornerElementsPosition(bounds, targetCornerElements);
+            CalculateProcessor.ProcessCornerElementsPosition(bounds, targetCornerElements);
         }
     }
 }

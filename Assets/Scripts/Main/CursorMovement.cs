@@ -1,5 +1,4 @@
-﻿using System;
-using Scripts.Entity;
+﻿using Scripts.Entity;
 using UnityEngine;
 
 namespace Scripts.Main

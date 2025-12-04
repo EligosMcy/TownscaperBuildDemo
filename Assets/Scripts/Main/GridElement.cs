@@ -11,6 +11,8 @@ namespace Scripts.Main
 
         private Renderer _renderer;
 
+        private bool _isEnable = false;
+
         [SerializeField]
         private CornerElement[] _corners = new CornerElement[8];
 
@@ -24,7 +26,7 @@ namespace Scripts.Main
 
             name = $"GE_{_coord.X}_{_coord.Y}_{_coord.Z}";
 
-            _corners = LevelGenerator.Instance.GetGridCornerElements(_coord);
+            _corners = LevelGenerator.Instance.GetGridForCornerElements(_coord);
 
             Bounds bounds = _collider.bounds;
 
@@ -35,16 +37,38 @@ namespace Scripts.Main
 
         public void SetEnable()
         {
+            _isEnable = true;
+
             _collider.enabled = true;
 
             _renderer.enabled = true;
+
+            setCornerBitMaskValue();
         }
 
         public void SetDisable()
         {
+            _isEnable = false;
+
             _collider.enabled = false;
 
             _renderer.enabled = false;
+
+            setCornerBitMaskValue();
+        }
+
+
+        public bool GetEnable()
+        {
+            return _isEnable;
+        }
+
+        private void setCornerBitMaskValue()
+        {
+            foreach (CornerElement cornerElement in _corners)
+            {
+                cornerElement.SetCornerBitMaskValue();
+            }
         }
     }
 }
