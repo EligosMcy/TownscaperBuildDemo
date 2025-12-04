@@ -1,3 +1,4 @@
+using System;
 using Scripts.Entity;
 using UnityEngine;
 
@@ -39,6 +40,11 @@ namespace Scripts.Main
 
         [SerializeField]
         private CornerElement[] _cornerElements;
+
+        private readonly float _floorHeight = 0.25f;
+
+        private readonly float _oneFloorHeight = 1.5f;
+        private float _basementHeight = 0;
 
         void Start()
         {
@@ -95,17 +101,38 @@ namespace Scripts.Main
 
         private void spawnGridElement()
         {
+            _basementHeight = _oneFloorHeight - _floorHeight / 2;
+
+            float elementHeight;
+
             _gridElements = new GridElement[_height * _width * _width];
 
             for (int y = 0; y < _height; y++)
             {
+                float yPos = y;
+
+                if (y == 0)
+                {
+                    elementHeight = _floorHeight;
+                }
+                else if (y == 1)
+                {
+                    elementHeight = _basementHeight;
+                    yPos = _floorHeight / 2 + _basementHeight / 2;
+                }
+                else
+                {
+                    elementHeight = 1;
+                }
+
+
                 for (int x = 0; x < _width; x++)
                 {
                     for (int z = 0; z < _width; z++)
                     {
-                        GridElement gridElement = Instantiate(_gridElement, new Vector3(x, y, z), Quaternion.identity, _gridElementGroup);
+                        GridElement gridElement = Instantiate(_gridElement, new Vector3(x, yPos, z), Quaternion.identity, _gridElementGroup);
 
-                        gridElement.Initialize(x, y, z);
+                        gridElement.Initialize(x, y, z, elementHeight);
 
                         gridElement.SetEnable();
 
@@ -130,9 +157,9 @@ namespace Scripts.Main
             return CalculateProcessor.GetCornerNearGridElements(_width, _height, _gridElements, currentCoord);
         }
 
-        public void ProcessCornerElementsPosition(Bounds bounds, CornerElement[] targetCornerElements)
+        public void ProcessCornerElementsPosition(Collider collider, CornerElement[] targetCornerElements)
         {
-            CalculateProcessor.ProcessCornerElementsPosition(bounds, targetCornerElements);
+            CalculateProcessor.ProcessCornerElementsPosition(collider, targetCornerElements);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Scripts.Entity;
+﻿using System;
+using Scripts.Entity;
 using UnityEngine;
 
 namespace Scripts.Main
@@ -13,24 +14,30 @@ namespace Scripts.Main
 
         private bool _isEnable = false;
 
+        private float _elementHeight;
+
         [SerializeField]
         private CornerElement[] _corners = new CornerElement[8];
 
-        public void Initialize(int setX, int setY, int setZ)
+        public void Initialize(int setX, int setY, int setZ, float elementHeight)
         {
-            _coord = new Coord(setX, setY, setZ);
-
             _collider = transform.GetComponent<Collider>();
 
             _renderer = transform.GetComponent<Renderer>();
 
+            _coord = new Coord(setX, setY, setZ);
+
+            _elementHeight = elementHeight;
+
             name = $"GE_{_coord.X}_{_coord.Y}_{_coord.Z}";
+
+            transform.localScale = new Vector3(1, _elementHeight, 1);
+
+            Physics.SyncTransforms();
 
             _corners = LevelGenerator.Instance.GetGridForCornerElements(_coord);
 
-            Bounds bounds = _collider.bounds;
-
-            LevelGenerator.Instance.ProcessCornerElementsPosition(bounds, _corners);
+            LevelGenerator.Instance.ProcessCornerElementsPosition(_collider, _corners);
         }
 
         public Coord GetCoord() { return _coord; }
@@ -41,7 +48,7 @@ namespace Scripts.Main
 
             _collider.enabled = true;
 
-            _renderer.enabled = true;
+            // _renderer.enabled = true;
 
             setCornerBitMaskValue();
         }
@@ -52,7 +59,7 @@ namespace Scripts.Main
 
             _collider.enabled = false;
 
-            _renderer.enabled = false;
+            // _renderer.enabled = false;
 
             setCornerBitMaskValue();
         }
@@ -61,6 +68,11 @@ namespace Scripts.Main
         public bool GetEnable()
         {
             return _isEnable;
+        }
+
+        public float GetElementHeight()
+        {
+            return _elementHeight;
         }
 
         private void setCornerBitMaskValue()

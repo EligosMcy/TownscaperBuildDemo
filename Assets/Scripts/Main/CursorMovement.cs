@@ -1,4 +1,5 @@
-﻿using Scripts.Entity;
+﻿using System;
+using Scripts.Entity;
 using UnityEngine;
 
 namespace Scripts.Main
@@ -11,7 +12,16 @@ namespace Scripts.Main
 
         private GridElement _lastGridElement;
 
+        private RectTransform _rectTransform;
+
         private readonly string _gridElementTag = "GridElement";
+
+        private void Start()
+        {
+            _rectTransform = transform.Find("Cursor Canvas").GetComponent<RectTransform>();
+
+            _rectTransform.sizeDelta = Vector2.zero;
+        }
 
         private void Update()
         {
@@ -36,6 +46,10 @@ namespace Scripts.Main
 
                 _lastGridElement = gridElement;
 
+                float elementHeight = _lastGridElement.GetElementHeight();
+
+                _rectTransform.sizeDelta = new Vector2(1, elementHeight);
+
                 transform.position = colliderTran.position;
             }
         }
@@ -52,8 +66,6 @@ namespace Scripts.Main
 
             GridElement targetGrid = LevelGenerator.Instance.GetProcessGrid(currentCoord, gridEventEnum);
 
-            Debug.Log($"Current Coord: {currentCoord} , GridEvent: {gridEventEnum} Bool: {targetGrid != null}");
-
             if (targetGrid != null)
             {
                 switch (gridEventEnum)
@@ -69,8 +81,6 @@ namespace Scripts.Main
                         targetGrid.SetEnable();
                         break;
                 }
-
-                Debug.Log($"Target: {targetGrid.GetCoord()}");
             }
         }
 

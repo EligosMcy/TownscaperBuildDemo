@@ -179,16 +179,28 @@ namespace Scripts.Entity
             return returnCornerElements;
         }
 
-        public static void ProcessCornerElementsPosition(Bounds bounds, CornerElement[] targetCornerElements)
+        public static void ProcessCornerElementsPosition(Collider collider, CornerElement[] targetCornerElements)
         {
-            targetCornerElements[0].SetPosition(bounds.min.x, bounds.min.y, bounds.min.z);
-            targetCornerElements[1].SetPosition(bounds.max.x, bounds.min.y, bounds.min.z);
-            targetCornerElements[2].SetPosition(bounds.min.x, bounds.min.y, bounds.max.z);
-            targetCornerElements[3].SetPosition(bounds.max.x, bounds.min.y, bounds.max.z);
-            targetCornerElements[4].SetPosition(bounds.min.x, bounds.max.y, bounds.min.z);
-            targetCornerElements[5].SetPosition(bounds.max.x, bounds.max.y, bounds.min.z);
-            targetCornerElements[6].SetPosition(bounds.min.x, bounds.max.y, bounds.max.z);
-            targetCornerElements[7].SetPosition(bounds.max.x, bounds.max.y, bounds.max.z);
+            Bounds bounds = collider.bounds;
+
+            float minX = bounds.min.x;
+            float maxX = bounds.max.x;
+
+            float minY = bounds.min.y;
+            float maxY = bounds.max.y;
+
+            float minZ = bounds.min.z;
+            float maxZ = bounds.max.z;
+
+            targetCornerElements[0].SetPosition(minX, minY, minZ);
+            targetCornerElements[1].SetPosition(maxX, minY, minZ);
+            targetCornerElements[2].SetPosition(minX, minY, maxZ);
+            targetCornerElements[3].SetPosition(maxX, minY, maxZ);
+
+            targetCornerElements[4].SetPosition(minX, maxY, minZ);
+            targetCornerElements[5].SetPosition(maxX, maxY, minZ);
+            targetCornerElements[6].SetPosition(minX, maxY, maxZ);
+            targetCornerElements[7].SetPosition(maxX, maxY, maxZ);
         }
 
 

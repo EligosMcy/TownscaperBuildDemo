@@ -7,6 +7,8 @@ namespace Scripts.Main
     {
         private Coord _coord;
 
+        private MeshFilter _meshFilter;
+
         [SerializeField]
         private int _bitMaskValue;
 
@@ -17,6 +19,8 @@ namespace Scripts.Main
             _coord = new Coord(setX, setY, setZ);
 
             name = $"CE_{_coord.X}_{_coord.Y}_{_coord.Z}";
+
+            _meshFilter = transform.GetComponent<MeshFilter>();
         }
 
         public Coord GetCoord()
@@ -37,6 +41,8 @@ namespace Scripts.Main
         public void SetCornerBitMaskValue()
         {
             _bitMaskValue = CalculateProcessor.GetBitMaskValue(_nearGridElements);
+
+            _meshFilter.mesh = CornerMeshes.Instance.GetCornerMesh(_bitMaskValue, _coord.Y);
         }
     }
 }
